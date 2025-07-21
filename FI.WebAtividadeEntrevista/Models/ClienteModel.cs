@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FI.AtividadeEntrevista.DML;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,6 +31,12 @@ namespace WebAtividadeEntrevista.Models
         /// </summary>
         [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$", ErrorMessage = "Digite um e-mail válido")]
         public string Email { get; set; }
+
+        /// <summary>
+        /// CPF
+        /// </summary>
+        [RegularExpression(@"^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$", ErrorMessage = "Digite um CPF válido no formato 000.000.000-00 ou 00000000000")]
+        public string CPF { get; set; }
 
         /// <summary>
         /// Estado
@@ -67,5 +74,10 @@ namespace WebAtividadeEntrevista.Models
         /// </summary>
         public string Telefone { get; set; }
 
+
+        /// <summary>
+        /// Beneficiarios
+        /// </summary>
+        public List<Beneficiario> Beneficiarios { get; set; }
     }    
 }

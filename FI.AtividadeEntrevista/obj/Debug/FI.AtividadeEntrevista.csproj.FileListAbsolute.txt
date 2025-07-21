@@ -1,0 +1,12 @@
+C:\TesteFuncao\FI.AtividadeEntrevista\bin\Debug\FI.AtividadeEntrevista.dll
+C:\TesteFuncao\FI.AtividadeEntrevista\bin\Debug\FI.AtividadeEntrevista.pdb
+C:\TesteFuncao\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.csproj.AssemblyReference.cache
+C:\TesteFuncao\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.csproj.CoreCompileInputs.cache
+C:\TesteFuncao\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.dll
+C:\TesteFuncao\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.pdb
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\bin\Debug\FI.AtividadeEntrevista.dll
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\bin\Debug\FI.AtividadeEntrevista.pdb
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.csproj.AssemblyReference.cache
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.csproj.CoreCompileInputs.cache
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.dll
+D:\GitHub\FuncaoSistemaTeste\FI.AtividadeEntrevista\obj\Debug\FI.AtividadeEntrevista.pdb

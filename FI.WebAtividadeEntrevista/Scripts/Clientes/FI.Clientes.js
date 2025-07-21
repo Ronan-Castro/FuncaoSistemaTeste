@@ -1,37 +1,51 @@
-﻿
-$(document).ready(function () {
-    $('#formCadastro').submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: urlPost,
-            method: "POST",
-            data: {
-                "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
-                "Sobrenome": $(this).find("#Sobrenome").val(),
-                "Nacionalidade": $(this).find("#Nacionalidade").val(),
-                "Estado": $(this).find("#Estado").val(),
-                "Cidade": $(this).find("#Cidade").val(),
-                "Logradouro": $(this).find("#Logradouro").val(),
-                "Telefone": $(this).find("#Telefone").val()
-            },
-            error:
-            function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
-            success:
-            function (r) {
-                ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();
-            }
-        });
-    })
-    
-})
+﻿$('#formCadastro').submit(function (e) {
+    e.preventDefault();
+
+    // Extrair beneficiarios da tabela
+    var beneficiarios = [];
+    $('#tabelaBeneficiarios tr').each(function () {
+        var rawId = $(this).data('id');
+        var id = (rawId === undefined || rawId.toString().includes("temp")) ? 0 : rawId;
+        var cpf = $(this).find('td:eq(0)').text().trim();
+        var nome = $(this).find('td:eq(1)').text().trim();
+
+        if (cpf && nome) {
+            beneficiarios.push({ Id: id, CPF: cpf, Nome: nome });
+        }
+
+    });
+
+    $.ajax({
+        url: urlPost,
+        method: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({
+            Nome: $('#Nome').val(),
+            Sobrenome: $('#Sobrenome').val(),
+            CPF: $('#CPF').val(),
+            Nacionalidade: $('#Nacionalidade').val(),
+            CEP: $('#CEP').val(),
+            Estado: $('#Estado').val(),
+            Cidade: $('#Cidade').val(),
+            Logradouro: $('#Logradouro').val(),
+            Email: $('#Email').val(),
+            Telefone: $('#Telefone').val(),
+            Beneficiarios: beneficiarios
+        }),
+        success: function (r) {
+            ModalDialog("Sucesso!", r);
+            $("#formCadastro")[0].reset();
+            $('#tabelaBeneficiarios').empty();
+        },
+        error: function (r) {
+            if (r.status == 400)
+                ModalDialog("Erro de validação", r.responseJSON);
+            else if (r.status == 500)
+                ModalDialog("Erro interno", "Ocorreu um erro interno no servidor.");
+        }
+    });
+});
+
 
 function ModalDialog(titulo, texto) {
     var random = Math.random().toString().replace('.', '');

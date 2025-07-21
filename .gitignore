@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+build/
+.cache/
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Pastas de build do .NET / Visual Studio
+bin/
+obj/
+
+# Pacote packages
+/packages/
+
+# Arquivos temporários e logs
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

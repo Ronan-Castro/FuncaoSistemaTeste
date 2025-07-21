@@ -26,7 +26,8 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-            
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -38,7 +39,18 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                
+                model.CPF = bo.LimparCpf(model.CPF);
+                if (!bo.IsCpfValido(model.CPF))
+                {
+                    Response.StatusCode = 400;
+                    return Json("Formato de CPF inválido");
+                }
+                if (bo.VerificarExistencia(model.CPF))
+                {
+                    Response.StatusCode = 400;
+                    return Json("CPF já cadastrado");
+                }                
+
                 model.Id = bo.Incluir(new Cliente()
                 {                    
                     CEP = model.CEP,
@@ -49,19 +61,37 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    CPF = model.CPF
                 });
+                if (model.Beneficiarios != null)
+                {
+                    foreach (var beneficiario in model.Beneficiarios)
+                    {
+                        beneficiario.Cpf = bo.LimparCpf(beneficiario.Cpf);
+                        if (!bo.IsCpfValido(beneficiario.Cpf))
+                        {
+                            Response.StatusCode = 400;
+                            return Json($"Formato de CPF do beneficiário {beneficiario.Nome} é inválido");
+                        }
 
-           
+                        //se não existe o beneficiário atual insere, não deixa salvar duplicado
+                        if (!boBeneficiario.VerificarExistencia(beneficiario.Cpf, model.Id) && beneficiario.Cpf != model.CPF)
+                        {
+                            beneficiario.IdCliente = model.Id;
+                            boBeneficiario.Incluir(beneficiario);
+                        }
+                    }
+                }
                 return Json("Cadastro efetuado com sucesso");
             }
         }
-
         [HttpPost]
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-       
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -84,9 +114,53 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    CPF = model.CPF
                 });
-                               
+
+                if (model.Beneficiarios != null)
+                {
+                    var idsExistentes = new List<long>();
+
+                    foreach (var beneficiario in model.Beneficiarios)
+                    {
+                        if (beneficiario.Id != 0)
+                        {
+                            idsExistentes.Add(beneficiario.Id);
+                        }
+                        beneficiario.IdCliente = model.Id;
+                        beneficiario.Cpf = bo.LimparCpf(beneficiario.Cpf);
+                    }
+                    //excluir
+                    boBeneficiario.ExcluirBeneficiarios(model.Id, idsExistentes);
+
+                    //update
+                    foreach (var beneficiario in model.Beneficiarios.Where(x => idsExistentes.Contains(x.Id)))
+                    {
+                        if (!bo.IsCpfValido(beneficiario.Cpf))
+                        {
+                            Response.StatusCode = 400;
+                            return Json($"Formato de CPF do beneficiário {beneficiario.Nome} é inválido");
+                        }
+                        boBeneficiario.Atualizar(beneficiario);
+                    }
+
+                    //novos
+                    foreach (var beneficiario in model.Beneficiarios.Where(x => !idsExistentes.Contains(x.Id)))
+                    {
+                        if (!bo.IsCpfValido(beneficiario.Cpf))
+                        {
+                            Response.StatusCode = 400;
+                            return Json($"Formato de CPF do beneficiário {beneficiario.Nome} é inválido");
+                        }
+                        //se não existe o beneficiário atual insere, não deixa salvar duplicado
+                        if (!boBeneficiario.VerificarExistencia(beneficiario.Cpf, model.Id) && beneficiario.Cpf != model.CPF)
+                        {
+                            beneficiario.IdCliente = model.Id;
+                            boBeneficiario.Incluir(beneficiario);
+                        }
+                    }
+                }
                 return Json("Cadastro alterado com sucesso");
             }
         }
@@ -96,6 +170,9 @@ namespace WebAtividadeEntrevista.Controllers
         {
             BoCliente bo = new BoCliente();
             Cliente cliente = bo.Consultar(id);
+
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+            var beneficiarios = boBeneficiario.Consultar(cliente.Id);
             Models.ClienteModel model = null;
 
             if (cliente != null)
@@ -111,9 +188,10 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    CPF = cliente.CPF,
+                    Beneficiarios = beneficiarios
                 };
-
             
             }
 

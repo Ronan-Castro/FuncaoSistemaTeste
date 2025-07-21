@@ -1,20 +1,28 @@
 ﻿
 <form id="formCadastro" method="post">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="form-group">
                 <label for="Nome">Nome:</label>
                 <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: João" maxlength="50">
             </div>
         </div>
-    </div>
-    <div class="row">
+
         <div class="col-md-6">
             <div class="form-group">
                 <label for="Sobrenome">Sobrenome:</label>
                 <input required="required" type="text" class="form-control" id="Sobrenome" name="Sobrenome" placeholder="Ex.: da Silva" maxlength="255">
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="CPF">CPF:</label>
+                <input required="required" type="text" class="form-control" id="CPF" name="CPF" placeholder="Ex.: 123.456.789-00" maxlength="14">
+            </div>
+        </div>
+
         <div class="col-md-6">
             <div class="form-group">
                 <label for="Nacionalidade">Nacionalidade:</label>
@@ -72,8 +80,13 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-lg-12">
+            <div class="pull-left">
+                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalBeneficiarios">
+                    Beneficiários
+                </button>
+            </div>
             <div class="pull-right">
                 <button type="submit" class="btn btn-sm btn-success">Salvar</button>
                 @Html.ActionLink("Voltar", "Index", "Cliente", new { }, new { @class = "btn btn-sm btn-danger" })
@@ -81,5 +94,44 @@
         </div>
     </div>
 
-
 </form>
+<!-- Modal de Beneficiários -->
+<div class="modal fade" id="modalBeneficiarios" tabindex="-1" role="dialog" aria-labelledby="modalBeneficiariosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Beneficiários</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">x</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Formulário de inclusão -->
+                <div class="form-inline mb-3">
+                    <input type="hidden" id="beneficiarioId" />
+                    <div class="form-group mr-4">
+                        <input type="text" id="cpfBeneficiario" class="form-control" placeholder="Ex.: 000.000.000-00" />
+                    </div>
+                    <div class="form-group mr-4">
+                        <input type="text" id="nomeBeneficiario" class="form-control" placeholder="Ex.: João da Silva" />
+                    </div>
+                    <button type="button" id="btnIncluirBeneficiario" class="btn btn-success">Incluir</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <table class="col-md-12 table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaBeneficiarios">
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
